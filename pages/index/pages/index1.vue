@@ -1,21 +1,17 @@
 <template>
-	<view style="margin: 0; padding: 0;">
-		<text style="background-color: #007AFF; height: 20rpx; margin: 0; padding: 0;">1111111</text>
+	<view>
 		<button type="default">ddddd</button>
 		<button type="default">ddddd</button>
+		<copy-uni-tabbar></copy-uni-tabbar>
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				
-			};
-		}
+export default {
+	data() {
+		return {};
 	}
+};
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>
