@@ -1,24 +1,29 @@
 <template>
 	<view class="index_content">
 		<view class="page_content">
-			<index1 v-if="show_index == 1" ref="index1"></index1>
-			<index2 v-else-if="show_index == 2" ref="index2"></index2>
-			<index3 v-else-if="show_index == 3" ref="index3"></index3>
-			<index4 v-else-if="show_index == 4" ref="index4"></index4>
-			<index5 v-else-if="show_index == 5" ref="index5"></index5>
+		<!-- 	<keep-alive>
+			<component v-bind:is="currentTabComponent" :ref="currentTabComponent"></component>
+			</keep-alive> -->
+	
+			<index1 v-show="selectedIndex == 0" ref="index1"></index1>
+			<index2 v-show="selectedIndex == 1" ref="index2"></index2>
+			<index3 v-show="selectedIndex == 2" ref="index3"></index3>
+			<index4 v-show="selectedIndex == 3" ref="index4"></index4>
+			<index5 v-show="selectedIndex == 4" ref="index5"></index5>
+	
 		</view>
-
-		<view class="tabBar">
-			<!-- 导航的中间圆圈 -->
-			<view class="border_box"><view class="tabBar_miden_border"></view></view>
-			<view class="tabBar_list">
-				<view v-for="item in tab_nav_list" :key="item.id" :class="{ tabBar_item: item.id != 3, tabBar_item2: item.id == 3 }" @tap="cut_index(item.id)">
-					<image v-if="show_index == item.id" :src="`../../static/tabBar/${item.id}${item.id}.png`"></image>
-					<image v-else :src="`../../static/tabBar/${item.id}.png`"></image>
-					<view :class="{ tabBar_name: true, nav_active: show_index == item.id }">{{ item.name }}</view>
-				</view>
-			</view>
-		</view>
+		<custom-uni-tabbar>
+			<block v-for="(item, index) in tabbarList" :key="item.title">
+				<custom-uni-tabbar-item
+					:isSelected="selectedIndex == index"
+					:title="item.title"
+					:name="item.title"
+					:normalImageSrc="item.image"
+					:selectedImageSrc="item.selectedImage"
+					@clickItem="clickItem"
+				/>
+			</block>
+		</custom-uni-tabbar>
 	</view>
 </template>
 
@@ -39,105 +44,37 @@ export default {
 	},
 	data() {
 		return {
-			show_index: 1,
-			tab_nav_list: [{ id: 1, name: '首页' }, { id: 2, name: '分类' }, { id: 3, name: '推荐' }, { id: 4, name: '购物车' }, { id: 5, name: '我' }]
+			selectedIndex: 0,
+			tabbarList: [
+				{ title: '首页a', image: '/static/tabBar/1.png', selectedImage: '/static/tabBar/11.png' },
+				{ title: '首页b', image: '/static/tabBar/2.png', selectedImage: '/static/tabBar/22.png' },
+				{ title: '首页c', image: '/static/tabBar/3.png', selectedImage: '/static/tabBar/33.png' },
+				{ title: '首页d', image: '/static/tabBar/4.png', selectedImage: '/static/tabBar/44.png' },
+				{ title: '首页e', image: '/static/tabBar/5.png', selectedImage: '/static/tabBar/55.png' }
+			]
 		};
 	},
 	methods: {
-		cut_index(type) {
-			console.log('显示：', type);
+		// 切换组件
+		clickItem(text) {
 			let self = this;
-			self.show_index = type;
+			console.log('click:', text);
+			self.tabbarList.some(function(item, index, array) {
+				if (item.title == text) {
+					self.selectedIndex = index;
+					return true;
+				} else {
+					return false;
+				}
+			});
+		},
+	},
+	computed: {
+		currentTabComponent() {
+			return 'index' + (this.selectedIndex+1);
 		}
 	}
 };
 </script>
 
-<style lang="scss">
-$tabbarheight: 100rpx;
-$tabbarbgcolor: rgba($color: #f5f, $alpha: 1.0);
-.index_content {
-	border: 2px solid #f00;
-	.page_content {
-		border: 2px solid #0f0;
-		// 这里本来是想用calc(env(safe-area-inset-bottom)+$tabbarheight)
-		// 但是没生效，暂时没搞懂时怎么回事，只有先分成2部分撑开底部
-		margin-bottom: $tabbarheight;
-		padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
-		padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
-	}
-	.tabBar {
-		width: 100%;
-		height: $tabbarheight;
-		background: $tabbarbgcolor;
-		border-top: 1px solid #e5e5e5;
-		padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
-		padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
-		position: fixed;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		.tabBar_list {
-			width: 86%;
-			display: flex;
-			justify-content: space-between;
-			image {
-				width: 48rpx;
-				height: 48rpx;
-				margin-bottom: 2rpx;
-			}
-			.tabBar_item {
-				width: 68rpx;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				flex-direction: column;
-				font-size: 20rpx;
-				color: #969ba3;
-			}
-			.tabBar_item2 {
-				width: 68rpx;
-				height: 100%;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				flex-direction: column;
-				font-size: 20rpx;
-				color: #969ba3;
-				margin-top: -20rpx;
-				position: relative;
-				z-index: 101;
-				image {
-					width: 68rpx;
-					height: 68rpx;
-				}
-			}
-		}
-	}
-	.border_box {
-		// pointer-events: none; 事件穿透解决z-index层级问题
-		width: 100%;
-		height: $tabbarheight;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		position: fixed;
-		left: 0px;
-		bottom: 50rpx;
-		z-index: 100;
-		pointer-events: none;
-		padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
-		padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
-		.tabBar_miden_border {
-			width: 100rpx;
-			height: 50rpx;
-			border-top: 2rpx solid #e5e5e5;
-			border-radius: 50rpx 50rpx 0 0; /* 左上、右上、右下、左下 */
-			background: $tabbarbgcolor;
-		}
-	}
-}
-</style>
+<style lang="scss"></style>

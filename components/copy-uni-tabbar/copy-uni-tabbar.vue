@@ -2,83 +2,34 @@
 	<view class="uni-tabbar-box">
 		<view class="uni-tabbar" :style="{ backgroundColor: backgroundColor }">
 			<view class="uni-tabbar-border" :style="{ backgroundColor: borderColor }"></view>
-			<view class="uni-tabbar__item">
-				<view class="uni-tabbar__bd">
-					<view class="uni-tabbar__icon">
-						<img src="/static/img/footer/home-act.png" />
-						<!---->
-					</view>
-					<view class="uni-tabbar__label" style="color: rgb(253, 87, 92); font-size: 10px;">
-						首页
-						<!---->
+			<block v-for="(item, index) in tabbarList" :key="item.title">
+				<view class="uni-tabbar__item" @tap="selectedItem(index)">
+					<view class="uni-tabbar__bd">
+						<view class="uni-tabbar__icon"><img :src="(index == selectedIndex)?item.selectedImage:item.image" /></view>
+						<view class="uni-tabbar__label" :style="(index == selectedIndex)?selectedItemStyle:itemStyle">{{ item.title }}</view>
 					</view>
 				</view>
-			</view>
-			<view class="uni-tabbar__item">
-				<view class="uni-tabbar__bd">
-					<view class="uni-tabbar__icon">
-						<img src="/static/img/footer/jiu.png" />
-						<!---->
-					</view>
-					<view class="uni-tabbar__label" style="color: rgb(102, 102, 102); font-size: 10px;">
-						9.9包邮
-						<!---->
-					</view>
-				</view>
-			</view>
-			<view class="uni-tabbar__item">
-				<view class="uni-tabbar__bd">
-					<view class="uni-tabbar__icon">
-						<img src="/static/img/footer/cate.png" />
-						<!---->
-					</view>
-					<view class="uni-tabbar__label" style="color: rgb(102, 102, 102); font-size: 10px;">
-						分类
-						<!---->
-					</view>
-				</view>
-			</view>
-			<view class="uni-tabbar__item">
-				<view class="uni-tabbar__bd">
-					<view class="uni-tabbar__icon">
-						<img src="/static/img/footer/like.png" />
-						<!---->
-					</view>
-					<view class="uni-tabbar__label" style="color: rgb(102, 102, 102); font-size: 10px;">
-						收藏
-						<!---->
-					</view>
-				</view>
-			</view>
-			<view class="uni-tabbar__item">
-				<view class="uni-tabbar__bd">
-					<view class="uni-tabbar__icon">
-						<img src="/static/img/footer/my.png" />
-						<!---->
-					</view>
-					<view class="uni-tabbar__label" style="color: rgb(102, 102, 102); font-size: 10px;">
-						我的
-						<!---->
-					</view>
-				</view>
-			</view>
+			</block>
 		</view>
 	</view>
 </template>
 
 <script>
+	
 export default {
 	data() {
-		return {};
+		return {
+			selectedIndex: 0
+		};
 	},
-	props:{
+	props: {
 		backgroundColor: {
 			type: String,
-			default: '#f00'
+			default: '#eee'
 		},
 		borderColor: {
 			type: String,
-			default: '#00f'
+			default: '#aaa'
 		},
 		textColor: {
 			type: String,
@@ -88,6 +39,53 @@ export default {
 			type: String,
 			default: '#ff0'
 		},
+		textFontSize: {
+			type: String,
+			default: '12px'
+		},
+		tabbarList: {
+			type: Array,
+			default:[
+				{ title: '首页a', image: '/static/tabBar/1.png', selectedImage: '/static/tabBar/11.png' },
+				{ title: '首页2', image: '/static/tabBar/2.png', selectedImage: '/static/tabBar/22.png' },
+				{ title: '首页3', image: '/static/tabBar/3.png', selectedImage: '/static/tabBar/33.png' },
+				{ title: '首页4', image: '/static/tabBar/4.png', selectedImage: '/static/tabBar/44.png' },
+				{ title: '首页5', image: '/static/tabBar/5.png', selectedImage: '/static/tabBar/55.png' }
+			]
+		}
+	},
+	computed: {
+		itemStyle() {
+			return {
+				color: this.textColor,
+				fontSize: this.textFontSize
+			}
+		},
+		selectedItemStyle() {
+			return {
+				color: this.selectedTextColor,
+				fontSize: this.textFontSize
+			}
+		}
+	},
+	methods: {
+		// 切换组件
+		selectedItem(index) {
+			let self = this;
+			self.selectedIndex = index;
+		
+			
+		},
+		// onPullDownRefresh() {
+		// 	uni.showToast({
+		// 		title: `第${this.show_index + 1}个页面的刷新`
+		// 	});
+		// 	setTimeout(function() {
+		// 		uni.stopPullDownRefresh();
+		// 	}, 2000);
+		// 	console.log('下拉刷新四个组件公用的下拉刷新方法,根据在哪个页面下拉执行哪个页面的刷新方方法即可');
+		// 	console.log('如果想要自定义刷新的话，插件市场就有一个   非常好用也非常容易入手');
+		// }
 	}
 };
 </script>
@@ -126,7 +124,7 @@ export default {
 .uni-tabbar-box .uni-tabbar__item {
 	/* -webkit-flex-direction: column; */
 	flex-direction: column;
-/* 	-webkit-box-flex: 1;
+	/* 	-webkit-box-flex: 1;
 	-webkit-flex: 1; */
 	flex: 1;
 	font-size: 0;
@@ -138,13 +136,13 @@ export default {
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
-/* 	-webkit-box-pack: center;
+	/* 	-webkit-box-pack: center;
 	-webkit-justify-content: center; */
 	justify-content: center;
-/* 	-webkit-box-align: center;
+	/* 	-webkit-box-align: center;
 	-webkit-align-items: center; */
 	align-items: center;
-/* 	-webkit-box-orient: vertical;
+	/* 	-webkit-box-orient: vertical;
 	-webkit-box-direction: normal; */
 }
 .uni-tabbar-box .uni-tabbar__bd {

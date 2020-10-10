@@ -1,22 +1,26 @@
 <template>
 	<view>
-		<text>2222222</text>
+		<text>{{params}}</text>
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				
-			}
-		},
-		methods: {
-			
-		}
+export default {
+	data() {
+		return {
+			params: '2--'
+		};
+	},
+	methods: {
+		
+	},
+	mounted() {
+	    var self = this;
+	    setTimeout(function () {
+	        self.params = self.params + 'bbb'
+	    }, 3000);
 	}
+};
 </script>
 
-<style>
-
-</style>
+<style lang="scss"></style>
